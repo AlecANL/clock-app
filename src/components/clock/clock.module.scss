@@ -1,0 +1,14 @@
+@use '../../styles/settings/typography';
+@use '../../styles/tools/responsive';
+
+.clock {
+  font: typography.$xs-h3-700;
+
+  @include responsive.from(md) {
+    font: typography.$md-h3-700;
+  }
+
+  @include responsive.from(lg) {
+    font: typography.$h1-700;
+  }
+}

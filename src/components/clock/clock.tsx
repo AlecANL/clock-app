@@ -1,3 +1,4 @@
+import styles from './clock.module.scss'
 import { useClock } from '../../hooks/useClock'
 
 export function Clock() {
@@ -12,8 +13,8 @@ export function Clock() {
   const seconds = parseCurrentTimeValues(currentTime.getSeconds())
 
   return (
-    <h1>
-      {hour}:{minutes}:{seconds}
+    <h1 className={styles.clock}>
+      {hour}:{minutes}
     </h1>
   )
 }
