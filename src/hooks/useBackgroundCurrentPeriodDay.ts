@@ -8,7 +8,7 @@ export function useBackGroundCurrentPeriodDay() {
   enum ETiming {
     DAY = 'day',
     NIGHT = 'night',
-    INIT_NIGHT = 16,
+    INIT_NIGHT = 18,
     INIT_DAY = 5,
   }
 
