@@ -1,0 +1,20 @@
+@use '../settings/sizes';
+
+$breakpoints: (
+  lg: sizes.$desktop,
+  md: sizes.$tablet,
+  sm: sizes.$mobile,
+  xs: sizes.$mobile-xs,
+);
+
+@mixin from($bp) {
+  @if (map-has-key($breakpoints, $bp)) {
+    @media screen and (min-width: map-get($breakpoints, $bp )) {
+      @content;
+    }
+  } @else {
+    @media screen and (min-width: $bp) {
+      @content;
+    }
+  }
+}
