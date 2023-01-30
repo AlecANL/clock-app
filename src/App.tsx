@@ -5,22 +5,30 @@ import { classNames } from './tools/classNames'
 import { Clock } from './components/clock/clock'
 import arrowIcon from './assets/desktop/icon-arrow-down.svg'
 import reloadIcon from './assets/desktop/icon-refresh.svg'
+import { useWindowResize } from './hooks/useWindowResize'
 
 function App() {
+  const { period, quote, icon } = useBackGroundCurrentPeriodDay()
+
   const [toggle, setToggle] = useState<boolean>(false)
+  const size = useWindowResize()
 
   function handleToggleFooter() {
     setToggle(!toggle)
   }
 
   const toggleClassName = toggle ? 'show' : ''
-  const { period, quote, icon } = useBackGroundCurrentPeriodDay()
   const periodDayForFooter = `footerBg-${period}`
   const iconText = toggle ? 'less' : 'more'
   const rotateIconClassName = toggle ? 'rotate' : ''
 
   return (
-    <div className={classNames([styles.app, styles[period]])}>
+    <div
+      style={{
+        height: `${size}px`,
+      }}
+      className={classNames([styles.app, styles[period]])}
+    >
       <div className={classNames([styles.appContainer, styles[toggleClassName]])}>
         <main className={classNames([styles.main])}>
           <blockquote className={styles.quote}>
