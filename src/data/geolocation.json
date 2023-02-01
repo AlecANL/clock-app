@@ -1,0 +1,100 @@
+{
+  "data": {
+    "ip": "190.106.222.142",
+    "hostname": "190.106.222.142",
+    "type": "v4",
+    "range_type": {
+      "type": "PUBLIC",
+      "description": "Public address"
+    },
+    "connection": {
+      "asn": 52362,
+      "organization": "Servicios Innovadores de ComunicaciÃ³n y Entretenimiento, S.A.",
+      "isp": "Servicios TIGO HOME",
+      "range": "190.106.222.128/25"
+    },
+    "location": {
+      "geonames_id": 3591318,
+      "latitude": 14.57964038848877,
+      "longitude": -90.48412322998047,
+      "zip": "01010",
+      "continent": {
+        "code": "NA",
+        "name": "North America",
+        "name_translated": "North America"
+      },
+      "country": {
+        "alpha2": "GT",
+        "alpha3": "GTM",
+        "calling_codes": ["+502"],
+        "currencies": [
+          {
+            "symbol": "GTQ",
+            "name": "Guatemalan Quetzal",
+            "symbol_native": "Q",
+            "decimal_digits": 2,
+            "rounding": 0,
+            "code": "GTQ",
+            "name_plural": "Guatemalan quetzals"
+          }
+        ],
+        "emoji": "🇬🇹",
+        "ioc": "GUA",
+        "languages": [
+          {
+            "name": "Castilian",
+            "name_native": "Castellano"
+          }
+        ],
+        "name": "Guatemala",
+        "name_translated": "Guatemala",
+        "timezones": ["America/Guatemala"],
+        "is_in_european_union": false,
+        "fips": "GT",
+        "geonames_id": 3595528,
+        "hasc_id": "GT",
+        "wikidata_id": "Q774"
+      },
+      "city": {
+        "fips": null,
+        "alpha2": null,
+        "geonames_id": 3598132,
+        "hasc_id": null,
+        "wikidata_id": "Q1555",
+        "name": "Guatemala City",
+        "name_translated": "Guatemala City"
+      },
+      "region": {
+        "fips": "GT07",
+        "alpha2": "GT-GU",
+        "geonames_id": 3595530,
+        "hasc_id": "GT.GU",
+        "wikidata_id": "Q695660",
+        "name": "Guatemala",
+        "name_translated": "Guatemala"
+      }
+    },
+    "tlds": [".gt"],
+    "timezone": {
+      "id": "America/Guatemala",
+      "current_time": "2023-01-29T21:46:26-06:00",
+      "code": "CST",
+      "is_daylight_saving": false,
+      "gmt_offset": -21600
+    },
+    "security": {
+      "is_anonymous": null,
+      "is_bot": null,
+      "is_known_attacker": null,
+      "is_proxy": null,
+      "is_spam": null,
+      "is_tor": null,
+      "proxy_type": null,
+      "threat_score": null
+    },
+    "domains": {
+      "count": null,
+      "domains": []
+    }
+  }
+}

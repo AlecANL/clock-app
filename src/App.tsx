@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import styles from './app.module.scss'
 import { useBackGroundCurrentPeriodDay } from './hooks/useBackgroundCurrentPeriodDay'
 import { classNames } from './tools/classNames'
@@ -6,12 +6,21 @@ import { Clock } from './components/clock/clock'
 import arrowIcon from './assets/desktop/icon-arrow-down.svg'
 import reloadIcon from './assets/desktop/icon-refresh.svg'
 import { useWindowResize } from './hooks/useWindowResize'
+import { IQuote } from './interfaces/quote.interface'
+import { EAPIUrl } from './constants/constant'
+import { IGeolocation } from './interfaces/geolocation.interface'
+import geolocationJson from './data/geolocation.json'
+import timeZoneJson from './data/time-zone.json'
+import quoteJson from './data/quote.json'
+import { IWorldTime } from './interfaces/world-time.interface'
+const isFakeCalled = true
 
 function App() {
   const { period, quote, icon } = useBackGroundCurrentPeriodDay()
 
   const [toggle, setToggle] = useState<boolean>(false)
-  const size = useWindowResize()
+  // const size = useWindowResize()
+  // console.log(size)
 
   function handleToggleFooter() {
     setToggle(!toggle)
@@ -22,13 +31,53 @@ function App() {
   const iconText = toggle ? 'less' : 'more'
   const rotateIconClassName = toggle ? 'rotate' : ''
 
+  async function fetchData<T>(url: string, supportedData: T, fakeCalled = false): Promise<T> {
+    try {
+      if (fakeCalled) {
+        return supportedData
+      }
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error('Something went wrong')
+      }
+
+      return response.json()
+    } catch (error) {
+      return supportedData
+    }
+  }
+
+  async function getRandomQuote(): Promise<IQuote | null> {
+    return fetchData<IQuote | null>(EAPIUrl.QUOTE, quoteJson, isFakeCalled)
+  }
+
+  async function getGeolocationIP(): Promise<IGeolocation | null> {
+    const url = EAPIUrl.GEOLOCATION_URL
+    const queryParams = new URLSearchParams()
+    queryParams.append('info', EAPIUrl.GEOIP_API_KEY as unknown as string)
+    return fetchData<IGeolocation>(`${url}?${queryParams.toString()}`, geolocationJson, isFakeCalled)
+  }
+
+  async function getTimeZone(idRegion: string) {
+    return fetchData<IWorldTime>(`${EAPIUrl.TIME_ZONE_URL}${idRegion}`, timeZoneJson, isFakeCalled)
+  }
+
+  useEffect(() => {
+    async function getData() {
+      try {
+        const quote = await getRandomQuote()
+        const geolocation = await getGeolocationIP()
+        const timeZone = await getTimeZone(geolocation?.data?.timezone?.id ?? '')
+        console.log(quote, geolocation, timeZone)
+      } catch (error) {
+      } finally {
+      }
+    }
+    getData()
+  })
+
   return (
-    <div
-      style={{
-        height: `${size}px`,
-      }}
-      className={classNames([styles.app, styles[period]])}
-    >
+    <div className={classNames([styles.app, styles[period]])}>
       <div className={classNames([styles.appContainer, styles[toggleClassName]])}>
         <main className={classNames([styles.main])}>
           <blockquote className={styles.quote}>
