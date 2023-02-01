@@ -53,7 +53,7 @@ function App() {
   async function getGeolocationIP(): Promise<IGeolocation | null> {
     const url = EAPIUrl.GEOLOCATION_URL
     const queryParams = new URLSearchParams()
-    queryParams.append('info', EAPIUrl.GEOIP_API_KEY as unknown as string)
+    queryParams.append('apikey', EAPIUrl.GEOIP_API_KEY as unknown as string)
     return fetchData<IGeolocation>(`${url}?${queryParams.toString()}`, geolocationJson, isFakeCalled)
   }
 
