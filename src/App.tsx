@@ -58,7 +58,7 @@ function App() {
   }
 
   async function getTimeZone(idRegion: string) {
-    return fetchData<IWorldTime>(`${EAPIUrl.TIME_ZONE_URL}${idRegion}`, timeZoneJson, isFakeCalled)
+    return fetchData<IWorldTime>(EAPIUrl.TIME_ZONE_URL, timeZoneJson, isFakeCalled)
   }
 
   async function handleGetQuote() {
