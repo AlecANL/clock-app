@@ -116,6 +116,21 @@
   }
 }
 
+.cite {
+  margin-top: 0.5rem;
+  font-weight: bold;
+  display: inline-block;
+  &::before {
+    content: ' - ';
+  }
+}
+
+.right-side {
+  @include responsive.from(lg) {
+    min-width: 12.5rem;
+  }
+}
+
 .footerBg-night {
   color: var(--just-white);
   &::before {

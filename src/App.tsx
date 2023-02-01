@@ -13,14 +13,13 @@ import geolocationJson from './data/geolocation.json'
 import timeZoneJson from './data/time-zone.json'
 import quoteJson from './data/quote.json'
 import { IWorldTime } from './interfaces/world-time.interface'
-const isFakeCalled = true
+import { IAppState } from './interfaces/app-state.interface'
+const isFakeCalled = import.meta.env.DEV
 
 function App() {
   const { period, quote, icon } = useBackGroundCurrentPeriodDay()
-
   const [toggle, setToggle] = useState<boolean>(false)
-  // const size = useWindowResize()
-  // console.log(size)
+  const [appState, setAppState] = useState<IAppState | null>(null)
 
   function handleToggleFooter() {
     setToggle(!toggle)
@@ -62,30 +61,47 @@ function App() {
     return fetchData<IWorldTime>(`${EAPIUrl.TIME_ZONE_URL}${idRegion}`, timeZoneJson, isFakeCalled)
   }
 
+  async function handleGetQuote() {
+    try {
+      const quote = await getRandomQuote()
+      setAppState({
+        ...(appState as IAppState),
+        quoteResponse: quote,
+      })
+    } catch (error) {}
+  }
+
   useEffect(() => {
     async function getData() {
       try {
         const quote = await getRandomQuote()
         const geolocation = await getGeolocationIP()
         const timeZone = await getTimeZone(geolocation?.data?.timezone?.id ?? '')
-        console.log(quote, geolocation, timeZone)
+        setAppState({
+          ...appState,
+          quoteResponse: quote,
+          geolocation,
+          worldTime: timeZone,
+        })
       } catch (error) {
       } finally {
       }
     }
     getData()
-  })
+  }, [])
+
+  const { quoteResponse, worldTime, geolocation } = appState ?? {}
 
   return (
     <div className={classNames([styles.app, styles[period]])}>
       <div className={classNames([styles.appContainer, styles[toggleClassName]])}>
         <main className={classNames([styles.main])}>
           <blockquote className={styles.quote}>
-            <p>
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nesciunt tempore sunt sit error, minima nisi quos incidunt delectus
-              laudantium provident enim, deserunt explicabo maxime accusamus, soluta facere suscipit sed hic.
-            </p>
-            <button className={styles['button-reload']}>
+            <div className='quote-content'>
+              <p>{quoteResponse?.content}</p>
+              <cite className={styles.cite}>{quoteResponse?.author}</cite>
+            </div>
+            <button onClick={handleGetQuote} className={styles['button-reload']}>
               <img src={reloadIcon} alt='reload icon' aria-hidden={true} />
             </button>
           </blockquote>
@@ -96,7 +112,12 @@ function App() {
                 <p>{quote}</p>
               </div>
               <Clock />
-              <p className={styles['current-location']}>in london, uk</p>
+              <p className={styles['current-location']}>
+                <span> in </span>
+                <span>
+                  {geolocation?.data?.location?.city?.name}, {geolocation?.data?.location?.country?.alpha2}
+                </span>
+              </p>
             </div>
             <button className={styles.btn} onClick={handleToggleFooter}>
               <span className={styles['icon-text']}>{iconText}</span>
@@ -117,21 +138,21 @@ function App() {
               <div className={classNames([styles.side, styles['left-side']])}>
                 <div className={classNames([styles['footer-item']])}>
                   <p className={classNames([styles['footer-title']])}>current timezone</p>
-                  <h3 className={classNames([styles['footer-description']])}>Europe/London</h3>
+                  <h3 className={classNames([styles['footer-description']])}>{geolocation?.data?.timezone?.id}</h3>
                 </div>
                 <div className={classNames([styles['footer-item']])}>
                   <p className={classNames([styles['footer-title']])}>day of the year</p>
-                  <h3 className={classNames([styles['footer-description']])}>Europe/London</h3>
+                  <h3 className={classNames([styles['footer-description']])}>{worldTime?.day_of_year}</h3>
                 </div>
               </div>
               <div className={classNames([styles['right-side'], styles.side])}>
                 <div className={classNames([styles['footer-item']])}>
                   <p className={classNames([styles['footer-title']])}>day of the week</p>
-                  <h3 className={classNames([styles['footer-description']])}>Europe/London</h3>
+                  <h3 className={classNames([styles['footer-description']])}>{worldTime?.day_of_week}</h3>
                 </div>
                 <div className={classNames([styles['footer-item']])}>
                   <p className={classNames([styles['footer-title']])}>week number</p>
-                  <h3 className={classNames([styles['footer-description']])}>Europe/London</h3>
+                  <h3 className={classNames([styles['footer-description']])}>{worldTime?.week_number}</h3>
                 </div>
               </div>
             </div>
