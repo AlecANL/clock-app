@@ -8,6 +8,7 @@
   overflow: hidden;
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: bottom;
   height: 100vh;
 
   &::before {
@@ -37,15 +38,15 @@
 }
 
 .show {
-  transform: translateY(-350px);
+  transform: translateY(var(--footer-height));
 
-  @include responsive.from(md) {
-    transform: translateY(-400px);
-  }
+  // @include responsive.from(md) {
+  //   transform: translateY(-400px);
+  // }
 
-  @include responsive.from(lg) {
-    transform: translateY(-370px);
-  }
+  // @include responsive.from(lg) {
+  //   transform: translateY(-370px);
+  // }
 }
 
 .main {
@@ -63,6 +64,8 @@
   gap: 1rem;
   margin-bottom: auto;
   max-width: 34.5625rem;
+  font: typography.$h5-700;
+  font-weight: normal;
 }
 
 .clock-widget {
@@ -79,11 +82,23 @@
   align-items: center;
   gap: 1rem;
   text-transform: uppercase;
+
+  @include responsive.from(lg) {
+    letter-spacing: 3.6px;
+  }
 }
 
 .current-location {
   font: typography.$h6-400;
   text-transform: uppercase;
+}
+
+.current-location,
+.current-period {
+  @include responsive.from(lg) {
+    font: typography.$h5-700;
+    font-weight: normal;
+  }
 }
 
 .footer {
@@ -103,7 +118,7 @@
   }
 
   @include responsive.from(md) {
-    --container-width: #{sizes.$ft-desktop-container};
+    // --container-width: #{sizes.$ft-desktop-container};
     height: 100%;
   }
 }
@@ -120,6 +135,7 @@
   margin-top: 0.5rem;
   font-weight: bold;
   display: inline-block;
+  font-style: normal;
   &::before {
     content: ' - ';
   }
@@ -134,8 +150,8 @@
 .footerBg-night {
   color: var(--just-white);
   &::before {
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(20.3871px);
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(1rem);
   }
 }
 
@@ -173,6 +189,12 @@
   border-color: transparent;
   flex-shrink: 0;
   align-self: flex-start;
+  transition: 0.5s;
+  transform: rotate(0);
+  transition-timing-function: cubic-bezier(0, -0.09, 0.91, 0.65);
+  &:active {
+    transform: rotate(300deg);
+  }
 }
 
 .icon {
@@ -201,21 +223,43 @@ div + .side {
   }
 }
 
-.footer-container {
-  max-width: var(--container-width);
-}
-
 .footer-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: var(--container-width);
   padding: 48px 26px;
+  margin: 0 auto;
   @include responsive.from(md) {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 5rem;
-    padding: 7.5rem 4rem;
+    row-gap: 3rem;
+    padding: 7.5rem 1.625rem;
   }
 
   @include responsive.from(lg) {
-    padding: 4.625rem 10.3125rem;
+    // min-height: 25rem;
+    padding: 4.625rem 1.625rem;
+    column-gap: 15.125rem;
+  }
+}
+
+.line {
+  display: none;
+  position: absolute;
+  left: 60%;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 15.75rem;
+  width: 1px;
+  background: var(--just-white);
+  mix-blend-mode: normal;
+  opacity: 0.25;
+
+  @include responsive.from(lg) {
+    display: block;
   }
 }
 
@@ -236,6 +280,12 @@ div + .side {
 
   @include responsive.from(md) {
     align-self: flex-start;
+    letter-spacing: 2.6px;
+  }
+
+  @include responsive.from(lg) {
+    font-size: 1rem;
+    letter-spacing: 3px;
   }
 }
 
@@ -246,5 +296,57 @@ div + .side {
 
   @include responsive.from(lg) {
     font: typography.$h2-700;
+  }
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  transform: translateY(0);
+  transition: transform 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  p {
+    font: typography.$h2-700;
+  }
+}
+
+.overlay-night {
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(20.3871px);
+}
+
+.overlay-day {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20.3871px);
+}
+
+.hide {
+  transform: translateY(-100%);
+}
+.bullets {
+  animation: dots 2s steps(3, end) infinite;
+}
+
+@keyframes dots {
+  0%,
+  20% {
+    color: rgba(0, 0, 0, 0);
+    text-shadow: 0.25em 0 0 rgba(0, 0, 0, 0), 0.5em 0 0 rgba(0, 0, 0, 0);
+  }
+  40% {
+    color: white;
+    text-shadow: 0.25em 0 0 rgba(0, 0, 0, 0), 0.5em 0 0 rgba(0, 0, 0, 0);
+  }
+  60% {
+    text-shadow: 0.25em 0 0 white, 0.5em 0 0 rgba(0, 0, 0, 0);
+  }
+  80%,
+  100% {
+    text-shadow: 0.25em 0 0 white, 0.5em 0 0 white;
   }
 }

@@ -1,7 +1,13 @@
 import styles from './clock.module.scss'
 import { useClock } from '../../hooks/useClock'
 
-export function Clock() {
+interface IClockProps {
+  currentTimeHourDescription: string
+}
+
+export function Clock(props: IClockProps) {
+  const { currentTimeHourDescription } = props
+
   const currentTime = useClock()
 
   function parseCurrentTimeValues(value: number) {
@@ -14,7 +20,10 @@ export function Clock() {
 
   return (
     <h1 className={styles.clock}>
-      {hour}:{minutes}
+      <span>
+        {hour}:{minutes}
+      </span>
+      <span className={styles.description}>{currentTimeHourDescription}</span>
     </h1>
   )
 }

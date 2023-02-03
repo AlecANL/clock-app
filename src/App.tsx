@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import styles from './app.module.scss'
 import { useBackGroundCurrentPeriodDay } from './hooks/useBackgroundCurrentPeriodDay'
 import { classNames } from './tools/classNames'
@@ -20,20 +20,32 @@ function App() {
   const { period, quote, icon } = useBackGroundCurrentPeriodDay()
   const [toggle, setToggle] = useState<boolean>(false)
   const [appState, setAppState] = useState<IAppState | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [footerHeight, setFooterHeight] = useState<number>(0)
+  const footerContainerRef = useRef<HTMLDivElement | null>(null)
 
   function handleToggleFooter() {
+    const footerHeight = footerContainerRef.current?.clientHeight ?? 0
+    setFooterHeight(footerHeight)
+    document.documentElement.style.setProperty('--footer-height', `-${footerHeight}px`)
     setToggle(!toggle)
   }
 
   const toggleClassName = toggle ? 'show' : ''
   const periodDayForFooter = `footerBg-${period}`
+  const overLayPeriod = `overlay-${period}`
   const iconText = toggle ? 'less' : 'more'
   const rotateIconClassName = toggle ? 'rotate' : ''
+  const hideOverlayClassName = isLoading ? '' : 'hide'
 
   async function fetchData<T>(url: string, supportedData: T, fakeCalled = false): Promise<T> {
     try {
       if (fakeCalled) {
-        return supportedData
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve(supportedData)
+          }, 100)
+        })
       }
       const response = await fetch(url)
       if (!response.ok) {
@@ -85,6 +97,7 @@ function App() {
         })
       } catch (error) {
       } finally {
+        setIsLoading(!isLoading)
       }
     }
     getData()
@@ -94,6 +107,11 @@ function App() {
 
   return (
     <div className={classNames([styles.app, styles[period]])}>
+      <div className={classNames([styles.overlay, styles[overLayPeriod], styles[hideOverlayClassName]])}>
+        <p>
+          LOADING <span className={styles.bullets}>.</span>
+        </p>
+      </div>
       <div className={classNames([styles.appContainer, styles[toggleClassName]])}>
         <main className={classNames([styles.main])}>
           <blockquote className={styles.quote}>
@@ -111,7 +129,7 @@ function App() {
                 <img src={icon} alt={`icon for ${period} period`} />
                 <p>{quote}</p>
               </div>
-              <Clock />
+              <Clock currentTimeHourDescription={worldTime?.abbreviation ?? ''} />
               <p className={styles['current-location']}>
                 <span> in </span>
                 <span>
@@ -132,31 +150,27 @@ function App() {
             </button>
           </section>
         </main>
-        <footer className={classNames([styles.footer, styles[periodDayForFooter]])}>
-          <div className={classNames([styles['footer-container']])}>
-            <div className={classNames([styles['footer-content']])}>
-              <div className={classNames([styles.side, styles['left-side']])}>
-                <div className={classNames([styles['footer-item']])}>
-                  <p className={classNames([styles['footer-title']])}>current timezone</p>
-                  <h3 className={classNames([styles['footer-description']])}>{geolocation?.data?.timezone?.id}</h3>
-                </div>
-                <div className={classNames([styles['footer-item']])}>
-                  <p className={classNames([styles['footer-title']])}>day of the year</p>
-                  <h3 className={classNames([styles['footer-description']])}>{worldTime?.day_of_year}</h3>
-                </div>
-              </div>
-              <div className={classNames([styles['right-side'], styles.side])}>
-                <div className={classNames([styles['footer-item']])}>
-                  <p className={classNames([styles['footer-title']])}>day of the week</p>
-                  <h3 className={classNames([styles['footer-description']])}>{worldTime?.day_of_week}</h3>
-                </div>
-                <div className={classNames([styles['footer-item']])}>
-                  <p className={classNames([styles['footer-title']])}>week number</p>
-                  <h3 className={classNames([styles['footer-description']])}>{worldTime?.week_number}</h3>
-                </div>
-              </div>
+        <footer ref={footerContainerRef} className={classNames([styles.footer, styles[periodDayForFooter]])}>
+          <div className={classNames([styles['footer-content']])}>
+            <div className={styles.line}></div>
+            <div className={classNames([styles['footer-item']])}>
+              <p className={classNames([styles['footer-title']])}>current timezone</p>
+              <h3 className={classNames([styles['footer-description']])}>{geolocation?.data?.timezone?.id}</h3>
+            </div>
+            <div className={classNames([styles['footer-item']])}>
+              <p className={classNames([styles['footer-title']])}>day of the year</p>
+              <h3 className={classNames([styles['footer-description']])}>{worldTime?.day_of_year}</h3>
+            </div>
+            <div className={classNames([styles['footer-item']])}>
+              <p className={classNames([styles['footer-title']])}>day of the week</p>
+              <h3 className={classNames([styles['footer-description']])}>{worldTime?.day_of_week}</h3>
+            </div>
+            <div className={classNames([styles['footer-item']])}>
+              <p className={classNames([styles['footer-title']])}>week number</p>
+              <h3 className={classNames([styles['footer-description']])}>{worldTime?.week_number}</h3>
             </div>
           </div>
+          {/* <div className={classNames([styles['footer-container']])}></div> */}
         </footer>
       </div>
     </div>

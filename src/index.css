@@ -19,6 +19,7 @@
   --just-black: #000;
   --dark-grey: hsl(0, 0%, 19%);
   --currentColor: var(--just-white);
+  --footer-height: 0;
   --interFont: 'Inter', sans-serif;
 }
 /*
@@ -27,7 +28,7 @@
 html,
 body {
   height: 100%;
-  font-family: 'Livvic', sans-serif;
+  font-family: var(--interFont);
   overflow-x: hidden;
   color: var(--currentColor);
 }
